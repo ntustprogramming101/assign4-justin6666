@@ -24,7 +24,8 @@ float[] cabbageX, cabbageY, soldierX, soldierY;
 float soldierSpeed = 2f;
 int life1=10, life2=80 , life3=150 , life4=220 , life5=290;
 
-
+int stop=0;
+int movement=stop;
 float playerX, playerY;
 int playerCol, playerRow;
 final float PLAYER_INIT_X = 4 * SOIL_SIZE;
@@ -255,8 +256,14 @@ void draw() {
     }
     
     //soldier
-   for(int i=0; i<6;i++){
-   image(soldier,soldierX[i]++,soldierY[i]);
+   for(int i = 0; i < soldierX.length; i++){
+
+      soldierX[i] += soldierSpeed;
+      if(soldierX[i] >= width) soldierX[i] = -SOIL_SIZE;
+
+      image(soldier, soldierX[i], soldierY[i]);
+
+   
    
    if(soldierX[i]+80>playerX  && soldierY[i]<playerY+80 &&
    playerY<soldierY[i]+80 && playerX+80>soldierX[i]){
@@ -290,16 +297,19 @@ playerHealth =1;}
    
   
 		// Cabbages
-    for(int i=0; i<6 ;i++ ){
-    image(cabbage,cabbageX[i],cabbageY[i]);
-    if(cabbageX[i]>=playerX && cabbageX[i]<=playerX && cabbageY[i]<=playerY 
-    && cabbageY[i]>=playerY)
-   {if(playerHealth <=4)
-   {if(playerHealth == 4){playerHealth  =5;}
-    if(playerHealth == 3){playerHealth  =4;}
-    if(playerHealth == 2){ playerHealth =3;}//2-3)
-    if(playerHealth == 1){ playerHealth =2;}
-     cabbageX[i]= -200;}}}//1-2}
+    for(int i = 0; i < cabbageX.length; i++){
+    image(cabbage, cabbageX[i], cabbageY[i]);
+
+      // Requirement #3: Use boolean isHit(...) to detect collision
+      if(playerHealth < PLAYER_MAX_HEALTH
+      && cabbageX[i] + SOIL_SIZE > playerX    // r1 right edge past r2 left
+        && cabbageX[i] < playerX + SOIL_SIZE    // r1 left edge past r2 right
+        && cabbageY[i] + SOIL_SIZE > playerY    // r1 top edge past r2 bottom
+        && cabbageY[i] < playerY + SOIL_SIZE) { // r1 bottom edge past r2 top
+
+        playerHealth ++;
+        cabbageX[i] = cabbageY[i] = -1000;
+    }}//1-2}
     
     //meet cabbages
     
@@ -562,7 +572,8 @@ playerHealth =1;}
   soldierY= new float[6];
   for(int i=0; i<6 ;i++ ){
   soldierX[i]=floor(random(8))*80;
-  soldierY[i]=floor(random(4))*80+i*320;}
+  soldierY[i]=floor(random(4))*80+i*320;
+  }
 
 
 			}
